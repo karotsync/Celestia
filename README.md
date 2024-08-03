@@ -80,17 +80,22 @@ s%^external_address = \"\"%external_address = \"$(wget -qO- eth0.me):${CELESTIA_
 s%:26660%:${CELESTIA_PORT}660%g" $HOME/.celestia-app/config/config.toml
 ```
 
-# config pruning
+**config pruning**
+```
 sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.celestia-app/config/app.toml
 sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.celestia-app/config/app.toml
 sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"50\"/" $HOME/.celestia-app/config/app.toml
+```
 
-# set minimum gas price, enable prometheus and disable indexing
+**set minimum gas price, enable prometheus and disable indexing**
+```
 sed -i 's|minimum-gas-prices =.*|minimum-gas-prices = "0.002utia"|g' $HOME/.celestia-app/config/app.toml
 sed -i -e "s/prometheus = false/prometheus = true/" $HOME/.celestia-app/config/config.toml
 sed -i -e "s/^indexer *=.*/indexer = \"null\"/" $HOME/.celestia-app/config/config.toml
+```
 
-# create service file
+**create service file**
+```
 sudo tee /etc/systemd/system/celestia-appd.service > /dev/null <<EOF
 [Unit]
 Description=Celestia node
@@ -105,7 +110,7 @@ LimitNOFILE=65535
 [Install]
 WantedBy=multi-user.target
 EOF
-
+```
 # reset and download snapshot
 celestia-appd tendermint unsafe-reset-all --home $HOME/.celestia-app
 if curl -s --head curl https://server-4.itrocket.net/testnet/celestia/celestia_2024-07-30_2373319_snap.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
