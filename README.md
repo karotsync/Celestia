@@ -111,15 +111,19 @@ LimitNOFILE=65535
 WantedBy=multi-user.target
 EOF
 ```
-# reset and download snapshot
+**reset and download snapshot**
+```
 celestia-appd tendermint unsafe-reset-all --home $HOME/.celestia-app
 if curl -s --head curl https://server-4.itrocket.net/testnet/celestia/celestia_2024-07-30_2373319_snap.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
   curl https://server-4.itrocket.net/testnet/celestia/celestia_2024-07-30_2373319_snap.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.celestia-app
     else
   echo "no snapshot founded"
 fi
+```
 
-# enable and start service
+**enable and start service**
+```
 sudo systemctl daemon-reload
 sudo systemctl enable celestia-appd
 sudo systemctl restart celestia-appd && sudo journalctl -u celestia-appd -f
+```
